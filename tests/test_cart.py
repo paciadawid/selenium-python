@@ -7,14 +7,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+from pages.login import LoginPage
+
 
 class TestCart(unittest.TestCase):
-
-    login_tab_selector = (By.CSS_SELECTOR, "a[href='/login']")
-    email_field_selector = (By.CSS_SELECTOR, "input[data-qa='login-email']")
-    password_field_selector = (By.CSS_SELECTOR, "input[data-qa='login-password']")
-    login_button_selector = (By.CSS_SELECTOR, "button[data-qa='login-button']")
-
     products_tab_selector = (By.XPATH, "//*[@href='/products']")
     search_product_field_selector = (By.ID, "search_product")
     add_to_cart_button_selector = (By.CLASS_NAME, "add-to-cart")
@@ -24,16 +20,12 @@ class TestCart(unittest.TestCase):
     cart_price_selector = (By.CLASS_NAME, "cart_total_price")
 
     def setUp(self) -> None:
-        options = webdriver.ChromeOptions()
-        options.add_argument("--start-maximized")
-
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
         self.driver.get("https://automationexercise.com/")
 
-        self.driver.find_element(*self.login_tab_selector).click()
-        self.driver.find_element(*self.email_field_selector).send_keys("seleniumremote@gmail.com")
-        self.driver.find_element(*self.password_field_selector).send_keys("tester")
-        self.driver.find_element(*self.login_button_selector).click()
+        self.login_page = LoginPage(self.driver)
+
+        self.login_page.login_with_email_password("seleniumremote@gmail.com", "tester")
 
     def test_multiple_products(self):
         self.driver.find_element(*self.products_tab_selector).click()
