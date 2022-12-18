@@ -2,7 +2,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from pages.base import BasePage
 
@@ -17,11 +17,12 @@ class ProductsPage(BasePage):
     def add_product_to_cart(self, product_name):
         self.driver.find_element(*self.products_tab_selector).click()
         try:
-            search_field = self.driver.find_element(*self.search_product_field_selector)
-        except NoSuchElementException:
+            search_field = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.search_product_field_selector))
+        except [NoSuchElementException, TimeoutException]:
             self.driver.set_window_size(400, 800)
             self.driver.maximize_window()
-            search_field = self.driver.find_element(*self.search_product_field_selector)
+            search_field = WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.search_product_field_selector)).click()
+
 
         search_field.clear()
         search_field.send_keys(product_name)

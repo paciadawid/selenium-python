@@ -16,6 +16,7 @@ class TestFilters(unittest.TestCase):
 
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         self.driver.get("https://automationexercise.com/")
+        print(self.driver.get_window_size())
 
         self.driver.find_element(By.CSS_SELECTOR, "a[href='/login']").click()
         self.driver.find_element(By.CSS_SELECTOR, "input[data-qa='login-email']").send_keys("seleniumremote@gmail.com")
