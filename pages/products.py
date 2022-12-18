@@ -14,12 +14,16 @@ class ProductsPage(BasePage):
     continue_shopping_button_selector = (By.CLASS_NAME, "close-modal")
     product_info_selector = (By.CLASS_NAME, "productinfo")
 
+    def add_products_to_cart(self, product_name, number_of_items):
+        for i in range(number_of_items):
+            self.add_product_to_cart(product_name)
+
     def add_product_to_cart(self, product_name):
         self.driver.find_element(*self.products_tab_selector).click()
         try:
             search_field = WebDriverWait(self.driver, 10).until(
                 EC.visibility_of_element_located(self.search_product_field_selector))
-        except [NoSuchElementException, TimeoutException]:
+        except (NoSuchElementException, TimeoutException):
             self.driver.set_window_size(400, 800)
             self.driver.maximize_window()
             search_field = WebDriverWait(self.driver, 5).until(
